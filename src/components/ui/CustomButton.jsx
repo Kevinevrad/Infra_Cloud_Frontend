@@ -1,8 +1,9 @@
 import Button from "@mui/material/Button";
 
-export default function CustomButton({ children, btnClik }) {
+export default function CustomButton({ children, btnClik, btnType }) {
   return (
     <Button
+      type={btnType}
       onClick={btnClik}
       variant="contained"
       fullWidth

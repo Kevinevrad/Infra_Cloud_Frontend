@@ -9,6 +9,8 @@ export default function LoginFields() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [data, setData] = useState(null);
+  const [serverError, setServerError] = useState("");
 
   // const [token, setToken] = useState("");
 
@@ -39,7 +41,10 @@ export default function LoginFields() {
   const onSubmit = (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-    console.log(loginFunction({ email, password }));
+
+    loginFunction({ email, password }, setData, setServerError);
+    console.log("DATA :", data);
+    console.log("ERROR SERVER :", serverError);
 
     setEmail("");
     setPassword("");
@@ -47,44 +52,46 @@ export default function LoginFields() {
 
   return (
     <Box>
-      <Input
-        label="Email"
-        inputValue={email}
-        inputError={errors.email}
-        type="text"
-        onChanged={(e) => setEmail(e.target.value)}
-      />
-      <Input
-        label="Password"
-        inputValue={password}
-        onChanged={(e) => setPassword(e.target.value)}
-        type="password"
-        inputError={errors.password}
-      />
-
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mt={1}
-      >
-        <FormControlLabel
-          control={<Checkbox size="small" />}
-          label="Se souvenir de moi"
+      <form action="#" onSubmit={(e) => onSubmit(e)}>
+        <Input
+          label="Email"
+          inputValue={email}
+          inputError={errors.email}
+          type="text"
+          onChanged={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          label="Password"
+          inputValue={password}
+          onChanged={(e) => setPassword(e.target.value)}
+          type="password"
+          inputError={errors.password}
         />
 
-        <Typography
-          variant="body2"
-          sx={{
-            cursor: "pointer",
-            color: "var(--color-primary)",
-          }}
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          mt={1}
         >
-          Password oublié?
-        </Typography>
-      </Box>
+          <FormControlLabel
+            control={<Checkbox size="small" />}
+            label="Se souvenir de moi"
+          />
 
-      <CustomButton btnClik={(e) => onSubmit(e)}>Se connecter</CustomButton>
+          <Typography
+            variant="body2"
+            sx={{
+              cursor: "pointer",
+              color: "var(--color-primary)",
+            }}
+          >
+            Password oublié?
+          </Typography>
+        </Box>
+
+        <CustomButton btnType={"submit"}>Se connecter</CustomButton>
+      </form>
 
       <Typography variant="body2" mt={3} color="var(--color-text-secondary)">
         Vous n'avez pas de compte?
