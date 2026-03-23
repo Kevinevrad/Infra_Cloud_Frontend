@@ -12,22 +12,15 @@ export const loginFunction = async (
   dataToSend,
   dataCollected,
   errorCollecting,
+  login,
 ) => {
-  axiosInstance
-    .post("/auth/login", dataToSend)
-    .then((response) => {
-      dataCollected(response.data);
-    })
-    .catch((err) => {
-      if (err.response) {
-        // console.log("DATA :", err.response.data);
-        errorCollecting((prev) => {
-          if (prev === "") {
-            prev + (err.response?.data?.message || "Erreur inconnue");
-          }
-        });
-      }
-    });
+  try {
+    const response = await axiosInstance.post("/auth/login", dataToSend);
+    dataCollected(response.data);
+    login(response.data?.user, response.data?.token);
+  } catch (err) {
+    errorCollecting(err.response?.data?.error || "Erreur inconnue");
+  }
 };
 
 export const interceptorToken = axiosInstance.interceptors.response.use(

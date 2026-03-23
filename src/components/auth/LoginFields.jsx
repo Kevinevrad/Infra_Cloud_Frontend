@@ -1,18 +1,26 @@
-import { Box, Checkbox, FormControlLabel, Typography } from "@mui/material";
+// prettier-ignore
+import {Box,Checkbox,FormControlLabel,Typography,Alert,} from "@mui/material";
+import { useAuthStore } from "../../store/authStore";
+
 import Input from "../ui/Input";
 import CustomButton from "../ui/CustomButton";
-import { useState } from "react";
-// import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { loginFunction } from "../../config/api";
 
 export default function LoginFields() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
-  const [data, setData] = useState(null);
-  const [serverError, setServerError] = useState("");
+  const login = useAuthStore((state) => state.login);
 
-  // const [token, setToken] = useState("");
+  // SERVER SIDE
+  const [data, setData] = useState(null);
+  const [serverError, setServerError] = useState(null);
+
+  useEffect(() => {
+    console.log("STATE : ", data);
+    console.log("STATE ERROR :", serverError);
+  }, [data, serverError]);
 
   // const goTo = useNavigate();
   const validateForm = () => {
@@ -34,7 +42,6 @@ export default function LoginFields() {
 
     // SET ERRORS OR RETURN TRUE IF NO ERRORS
     setErrors(newErrors);
-
     return Object.keys(newErrors).length === 0;
   };
 
@@ -42,9 +49,7 @@ export default function LoginFields() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    loginFunction({ email, password }, setData, setServerError);
-    console.log("DATA :", data);
-    console.log("ERROR SERVER :", serverError);
+    loginFunction({ email, password }, setData, setServerError, login);
 
     setEmail("");
     setPassword("");
@@ -89,11 +94,21 @@ export default function LoginFields() {
             Password oublié?
           </Typography>
         </Box>
+        {serverError && (
+          <Alert
+            severity="error"
+            sx={{
+              margin: "20px 0",
+            }}
+          >
+            {serverError}
+          </Alert>
+        )}
 
         <CustomButton btnType={"submit"}>Se connecter</CustomButton>
       </form>
 
-      <Typography variant="body2" mt={3} color="var(--color-text-secondary)">
+      {/* <Typography variant="body2" mt={3} color="var(--color-text-secondary)">
         Vous n'avez pas de compte?
         <span
           style={{
@@ -105,7 +120,7 @@ export default function LoginFields() {
         >
           Creer un compte
         </span>
-      </Typography>
+      </Typography> */}
     </Box>
   );
 }
